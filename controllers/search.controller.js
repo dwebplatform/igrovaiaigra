@@ -1,9 +1,10 @@
 const db = require("../models");
-const User = db.users;
+
+const paginate = require('express-paginate');
+// const User = db.users;
 const Trener = db.treners;
 const Subject = db.subjects;
 const Op = db.Sequelize.Op;
-
 /**
  * 
  * @method {"GET"}  
@@ -45,11 +46,19 @@ exports.searchTreners = async (req,res)=>{ // находим тренеров у
             }
         }   
     }
-    let allTreners = await Trener.findAll(searchedTrenerObj);
+    // пагинация использовать метод findAndCountAll
+    let allTreners = await Trener.findAndCountAll({...searchedTrenerObj,
+        limit: req.query.limit,
+        offset: req.skip
+    });
+    const itemCount = allTreners.count;
+    const pageCount = Math.ceil(allTreners.count / req.query.limit);
     if(allTreners) {
         return res.json({
             status:'ok',
-            body: allTreners
+            body: allTreners,
+            itemCount,
+            pageCount
         });
     } else {
         return res.json({

@@ -6,8 +6,9 @@ const cors = require("cors");
 const hbs = require("hbs");
 const expressHbs = require("express-handlebars");
 // const jwt = require('jsonwebtoken');
+const paginate = require('express-paginate');
 const app = express();
-
+app.use(paginate.middleware(10, 50));
 app.set('views', __dirname + '/views');
  
 app.engine("hbs", expressHbs(
