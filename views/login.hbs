@@ -1,0 +1,31 @@
+<form onSubmit="handleSubmit(this); return false;">
+    <label>Пользователь пробует зарегаться:</label>
+    <input id='email' name='email' value="{{email}}"/>
+    <input id='password' name='password' value="{{password}}"/>
+    <button>Подтвердить</button>
+</form>
+<script>
+    async function handleSubmit(form){
+        let email = document.querySelector('#email').value;
+        let password = document.querySelector('#password').value;
+        let data = {
+            password,
+            email
+        }
+        
+        let response = await fetch('/api/users/login',{
+            method:'POST',
+              headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify(data)
+        })
+        try { 
+        let result = await response.json();
+            console.log(result.token)
+        } catch(e){
+            console.log(e);
+        }
+
+    }
+</script>

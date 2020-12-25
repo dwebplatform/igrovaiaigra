@@ -1,0 +1,29 @@
+<div>
+    <div class="dashboard">
+        <div>
+           <h3> If you see this pagse that means u a trener</h3>
+            <div >
+                Load Image
+                <form 
+                     action="/api/treners/upload"
+                     method="POST" enctype="multipart/form-data"
+                    >
+                 <input name="myImage"
+                  type="file" id="file-loader"/>   
+                 <button type="submit">Отправить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function handleLoading(){
+        // загрузить файл
+        let fileInput = document.querySelector('#file-loader');
+        let file = fileInput.files[0];
+        if(!file){
+            return;
+        }
+        console.log(file);
+    }
+</script>
