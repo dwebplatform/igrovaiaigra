@@ -4,6 +4,7 @@ module.exports = (app) => {
     let router = require("express").Router();
     // Create a new Tutorial
       
+    router.post('/login', users.checkUser);
     router.get('/all', verifyToken, users.usersProtected);
     router.get('/login',users.loginPage);     
     app.use('/api/users', router);

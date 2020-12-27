@@ -1,5 +1,7 @@
 const db = require("../models");
 const Trener = db.treners;
+const Subject = db.subjects;
+const Comment = db.comments;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 // const multer = require('multer');
@@ -39,22 +41,51 @@ exports.trenerById = async(req,res)=>{
  * @method {"GET"} 
  * @description get all treners 
  */
-exports.allTreners =async(req,res)=>{
+exports.allTreners = async (req,res)=>{
    try{
-    let allTreners = await Trener.findAll({
-        attributes: 
+  
+    let allTreners = await Trener.findAndCountAll({
+        limit: req.query.limit,
+        offset: req.skip,
+        include:[{
+          model: Subject,
+        },
         {
-            exclude: ['password']
+          model: Comment
+        }],
+        attributes:{
+          exclude:['password']
         }
+
     });
-    return res.json({
-        body: allTreners
-    })
+    const itemCount = allTreners.count;
+    const pageCount = Math.ceil(allTreners.count / req.query.limit);
+    if(allTreners) {
+        return res.json({
+            status:'ok',
+            body: allTreners,
+            itemCount,
+            pageCount
+        });
+    } else {
+        return res.json({
+            status:'error'
+        })
+    }
+    // let allTreners = await Trener.findAll({
+    //     attributes: 
+    //     {
+    //         exclude: ['password']
+    //     }
+    // });
+    // return res.json({
+    //     body: allTreners
+    // });
 
    } catch(e){
+
        return res.json({
            status:'error',
-           msg:e
        })
    }
  }

@@ -11,6 +11,12 @@ module.exports = (sequelize, Sequelize) => {
           price:{
             type: Sequelize.INTEGER,
           },
+          avatar:{
+            type:Sequelize.STRING,
+          },
+          rating:{
+            type:Sequelize.INTEGER,
+          },
           password:{
             type: Sequelize.STRING,
           },

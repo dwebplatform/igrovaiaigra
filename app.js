@@ -24,22 +24,69 @@ const db = require("./models");
 
 // связи в БД
 const Subject = db.subjects;
+const Comment = db.comments;
 const Trener = db.treners;
 Subject.belongsToMany(Trener, { through: 'Trener_Subject' });
 Trener.belongsToMany(Subject, { through: 'Trener_Subject' });
-//  (async()=>{
-//   let subject = await Subject.findOne({
-//     where:{
-//       id:3
-//     }
-//   })
-//   let newTrener = await Trener.create({
-//     name:'Yakudza1022',
-//     password:'1234',
-//     email:'karpov-vb-1996@mail.ru'
-//   });
-//    await newTrener.addSubject(subject);
-// })();
+Trener.hasMany(Comment);
+
+
+Comment.belongsTo(Trener);
+ 
+ (async()=>{
+
+  const subjects = ['Owerwatch','Dota 2','CS : GO','Super Mario'];
+
+  const alltreners =[{
+  name:'Jack',
+  password:'1234',
+  avatar:'img/avatar1.jpg',
+  price: 3700
+},
+{
+  name:'Bob',
+  password:'1234',
+  avatar:'img/avatar2.jpg',
+  price: 3700
+},
+{
+  name:'Bob',
+  password:'1234',
+  avatar:'img/avatar3.jpg',
+  price: 3600
+
+}];
+
+alltreners.forEach(async el=>{
+   await Trener.create({
+    name:el.name,
+    password: el.password,
+    email:'karpov-vb-1996@mail.ru',
+    avatar:el.avatar,
+    price: el.price
+   });
+});
+ let subject = await Subject.create({
+  name: subjects[1]
+ });
+ let tr = await Trener.findOne({
+  where:{
+    id: 1,
+  }
+ });
+ tr.addSubject(subject)
+  // let subject = await Subject.findOne({
+  //   where:{
+  //     id:1
+  //   }
+  // })
+  // let newTrener = await Trener.create({
+  //   name:'Yakudza1022',
+  //   password:'1234',
+  //   email:'karpov-vb-1996@mail.ru'
+  // });
+   // await newTrener.addSubject(subject);
+});
 /**
  * connactions 
  */

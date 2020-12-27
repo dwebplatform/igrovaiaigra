@@ -10,7 +10,6 @@ const jwt = require('jsonwebtoken');
  * @param {*} res 
  */
 exports.loginPage = (req,res)=>{
-    
     return res.render('login', {
         email:'',
         password:''
@@ -23,6 +22,7 @@ exports.loginPage = (req,res)=>{
  * @authorization 
  */
 exports.usersProtected = (req,res)=>{
+
     jwt.verify(req.token, 'secretkey', (err, authData) => {
         if(err) {
           res.sendStatus(403);
@@ -36,7 +36,7 @@ exports.usersProtected = (req,res)=>{
 }
 /**
  * @method {"POST"} req 
- * @param {password, email} 
+ * @params {password, email} регистрация пользователя по jwt
  */
 exports.checkUser = async (req,res)=>{
     let {password, email} = req.body;
@@ -51,11 +51,11 @@ exports.checkUser = async (req,res)=>{
             bcrypt.compare(password, hashedPass, function(err, result) {
                  if(err){
                     return res.json({
-                        status:'error'
+                        status:'error',
+                        err
                     })
                 }
                 if(result){
-                   
                     jwt.sign({user:{
                       id:user.id,
                       email: user.email,
@@ -68,6 +68,7 @@ exports.checkUser = async (req,res)=>{
                            });
                        }
                        return res.json({
+                        status:'ok',
                         token
                       });
                     });
@@ -85,23 +86,10 @@ exports.checkUser = async (req,res)=>{
             })
         }
     } catch(e){
-        console.log(e);
         return res.json({
-            status:'error'
+            status:'error',
+            
         })
     }
      
-     
-    // let hash = bcrypt.hashSync(password, salt);
-    // if(hash){
-      
-         
-    //     // if(user instanceof User){
-    //     //     return res.json({
-    //     //         status:'ok',
-    //     //         message:'created'
-    //     //     })
-    //     // }
-    // }   
-    
 }

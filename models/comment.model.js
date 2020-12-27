@@ -1,13 +1,13 @@
 module.exports = (sequelize, Sequelize) => {
-    const Subject = sequelize.define("subjects", {
+    const Comment = sequelize.define("comments", {
         id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
             autoIncrement: true // Automatically gets converted to SERIAL for postgres
           },
-          name:{
+          text:{
               type: Sequelize.STRING,
           },
         });
-    return Subject;
+    return Comment;
   };
