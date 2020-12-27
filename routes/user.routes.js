@@ -5,6 +5,7 @@ module.exports = (app) => {
     // Create a new Tutorial
       
     router.post('/login', users.checkUser);
+    router.post('/register', users.registerUser);
     router.get('/all', verifyToken, users.usersProtected);
     router.get('/login',users.loginPage);     
     app.use('/api/users', router);

@@ -34,9 +34,53 @@ exports.usersProtected = (req,res)=>{
         }
       });   
 }
+
+/**
+ *
+ *@method {"POST"} 
+ *@description register new user
+ */
+exports.registerUser = async(req,res)=>{// регистрируем пользователя
+    let {email, password} = req.body;
+    if(!email ||!password){// проверяем поля
+      return res.json({
+        status:'error',
+        msg:'invalid email or password'
+      });
+    }
+    else {
+      bcrypt.genSalt(10, function(err, salt) {
+        bcrypt.hash(password.trim(), salt, async function(err, hash) {// хешируем и создаем пользователя
+            if(err) {
+              return res.json({
+                status:'error'
+              });
+            }
+            try { 
+              let frashUser = await User.create({
+                email:email,
+                password:hash
+              });
+              if(frashUser instanceof User){
+                
+                return res.json({
+                  status:'ok',
+                  msg:'succefully created'
+                });
+              }
+            } catch(e){
+              return res.json({
+                status:'error'
+              })
+            }
+        });
+    });
+      
+    }
+}
 /**
  * @method {"POST"} req 
- * @params {password, email} регистрация пользователя по jwt
+ * @params {password, email} вход пользователя по jwt
  */
 exports.checkUser = async (req,res)=>{
     let {password, email} = req.body;
@@ -69,7 +113,8 @@ exports.checkUser = async (req,res)=>{
                        }
                        return res.json({
                         status:'ok',
-                        token
+                        token,
+                        type:'user'
                       });
                     });
                 } else {
@@ -88,8 +133,7 @@ exports.checkUser = async (req,res)=>{
     } catch(e){
         return res.json({
             status:'error',
-            
-        })
+        });
     }
      
 }

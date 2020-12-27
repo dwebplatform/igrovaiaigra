@@ -149,10 +149,9 @@ exports.checkAuthPage = async (req,res)=>{
                  if(err){
                     return res.json({
                         status:'error'
-                    })
+                    });
                 }
                 if(result){
-                   
                     jwt.sign({trener:{
                       id:trener.id,
                       email: trener.email,
@@ -165,7 +164,9 @@ exports.checkAuthPage = async (req,res)=>{
                            });
                        }
                        return res.json({
-                        token
+                        status:'ok',
+                        token,
+                        type:'trener'
                       });
                     });
                 } else {
