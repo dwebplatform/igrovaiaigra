@@ -7,8 +7,14 @@ const hbs = require("hbs");
 const expressHbs = require("express-handlebars");
 // const jwt = require('jsonwebtoken');
 const paginate = require('express-paginate');
+const fileUpload = require('express-fileupload');
+
 const app = express();
-app.use(paginate.middleware(10, 50));
+
+app.use(paginate.middleware(10, 50));// пагинация страниц
+app.use(fileUpload({
+    createParentPath: true
+}));// для загрузки файлов
 app.set('views', __dirname + '/views');
  
 app.engine("hbs", expressHbs(
@@ -20,6 +26,8 @@ app.engine("hbs", expressHbs(
 ))
 app.set("view engine", "hbs");
 hbs.registerPartials(__dirname + "/views/partials");
+
+
 const db = require("./models");
 
 // связи в БД

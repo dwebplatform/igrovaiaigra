@@ -7,9 +7,66 @@ const jwt = require('jsonwebtoken');
 // const multer = require('multer');
 // const path = require('path');
 
-const uploadFile = require('../utils/uploadFile');
+// const uploadFile = require('../utils/uploadFile');
 
-const upload = uploadFile('myImage');
+// const upload = uploadFile('myImage');
+
+
+/**
+ *@method {"POST"}
+ *@description редактировать данные тренера
+*/
+exports.editTrener = async(req,res)=>{
+  let trenerId = req.body.id;
+  let trenerName = req.body.name;
+  let trenerPrice = req.body.price;
+  let allSubjects = JSON.parse(req.body.subjects);
+   
+  if(!req.files){
+    return res.json({
+      status: 'error',
+      msg: 'no file provided'
+    });
+  } else {
+    let avatar = req.files.avatar;
+    //:TODO доделать проверку загрузки img и дописать отправку всех полей
+    let fileName = '/img/_uid_'+ trenerId + '_'+Math.floor(Math.random()*100000)+'.jpg';
+    avatar.mv('./public'+fileName);
+    let updateTrener = await Trener.findOne({where:{
+      id: trenerId
+    }});
+    
+    updateTrener.name = trenerName;
+    updateTrener.price = trenerPrice;
+    updateTrener.avatar = fileName;
+    allSubjects.forEach( async (subjectId)=>{
+        let findedSubject = await Subject.findOne({
+          where: {
+            id: subjectId
+          }
+        });
+        if(findedSubject){
+          await updateTrener.addSubject(findedSubject)
+        }
+    })
+    try {
+      await updateTrener.save();
+      return res.json({
+        status:"ok",
+        msg:'Данные теперь новые'
+      })
+    } catch(e){
+      return res.json({
+        status:'error',
+        msg:'не удалось обновить данные'
+      })
+    }
+    return res.json({
+      status:'ok',
+      msg:'we do have file inside'
+    });
+  }
+}
 
 /**
  * 
@@ -95,21 +152,21 @@ exports.allTreners = async (req,res)=>{
  * @description загрузка файла
  */
 exports.uploadAction =(req, res)=>{
-   try{
-    upload(req,res,(err)=>{
-        if(err){
-           return res.json({
-               status:'error',
-               msg:err
-           });
-        } else {
-            console.log(req.file);
-            res.send('test');
-        }
-    });
-   }  catch(e){
-    console.log(e)
-   }
+   // try{
+   //  upload(req,res,(err)=>{
+   //      if(err){
+   //         return res.json({
+   //             status:'error',
+   //             msg:err
+   //         });
+   //      } else {
+   //          console.log(req.file);
+   //          res.send('test');
+   //      }
+   //  });
+   // }  catch(e){
+   //  console.log(e)
+   // }
      
      
 }

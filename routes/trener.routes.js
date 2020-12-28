@@ -9,6 +9,7 @@ module.exports = (app) => { // роуты для тренеров
         router.post('/login', treners.checkAuthPage);
         router.get('/login', treners.trenerPage);
         router.get('/protectedtreners',verifyToken,treners.trenersProtected);
+        router.post('/edit',treners.editTrener);
         router.post('/upload', treners.uploadAction);
         router.get('/dashboard', treners.dashboardPage);
     app.use('/api/treners', router);

@@ -4,7 +4,29 @@ const paginate = require('express-paginate');
 // const User = db.users;
 const Trener = db.treners;
 const Subject = db.subjects;
+
 const Op = db.Sequelize.Op;
+
+
+/**
+ * @method {"GET"}  
+ * @params 
+ * @description  список всех предметов  
+ */
+ exports.getAllSubjects = async(req,res)=>{
+
+    try{
+    let allSubjects = await Subject.findAll({});
+    return res.json({
+        status:'ok',
+        body: allSubjects
+    });
+    } catch(e){
+        return res.json({
+            status:'error'
+        })        
+    }
+    }
 /**
  * 
  * @method {"GET"}  
