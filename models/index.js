@@ -15,9 +15,7 @@ db.sequelize = sequelize;
 let routes = filepaths.getSync('./models');
 
 // db.users = require("./user.model.js")(sequelize, Sequelize);
- 
 for(let path of routes){// перебор по роутам, чтобы не нужно было писать require('./testModel.model.js")(sequelize,Sequelize);
-    
     let [main, sub] = path.split('\\');
     if(sub.includes('index')){
         continue;
@@ -26,5 +24,5 @@ for(let path of routes){// перебор по роутам, чтобы не н�
         db[`${name}s`] = require(`./${name}.${model}.${ext}`)(sequelize, Sequelize);
     }
  }
- 
+
 module.exports = db;

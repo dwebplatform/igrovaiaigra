@@ -14,5 +14,3 @@ module.exports = (app) => { // роуты для тренеров
         router.get('/dashboard', treners.dashboardPage);
     app.use('/api/treners', router);
   };
-
-   

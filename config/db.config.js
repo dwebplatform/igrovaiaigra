@@ -4,5 +4,5 @@ module.exports = {
     PASSWORD: "",
     DB: "where_is_your_motivation_db",
     dialect: "mysql",
-     
+
   };

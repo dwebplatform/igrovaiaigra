@@ -15,7 +15,5 @@ function verifyToken(req, res, next) {
       // Forbidden
       res.sendStatus(403);
     }
-  
   }
-  
 module.exports = verifyToken;

@@ -1,6 +1,5 @@
 
 const express = require('express');
-const verifyToken = require('./utils/verifyToken');
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const hbs = require("hbs");
@@ -8,6 +7,7 @@ const expressHbs = require("express-handlebars");
 // const jwt = require('jsonwebtoken');
 const paginate = require('express-paginate');
 const fileUpload = require('express-fileupload');
+const passport = require('passport');
 
 const app = express();
 
@@ -16,7 +16,7 @@ app.use(fileUpload({
     createParentPath: true
 }));// для загрузки файлов
 app.set('views', __dirname + '/views');
- 
+
 app.engine("hbs", expressHbs(
   {
       layoutsDir: "views/layouts", 
@@ -40,7 +40,7 @@ Trener.hasMany(Comment);
 
 
 Comment.belongsTo(Trener);
- 
+
  (async()=>{
 
   const subjects = ['Owerwatch','Dota 2','CS : GO','Super Mario'];
@@ -62,12 +62,10 @@ Comment.belongsTo(Trener);
   password:'1234',
   avatar:'img/avatar3.jpg',
   price: 3600
-
 }];
-
 alltreners.forEach(async el=>{
    await Trener.create({
-    name:el.name,
+    name: el.name,
     password: el.password,
     email:'karpov-vb-1996@mail.ru',
     avatar:el.avatar,
@@ -103,6 +101,10 @@ db.sequelize.sync().catch((e)=>{
     console.log(e)
 });
 
+app.use(passport.initialize());
+
+require('./config/passport')(passport);
+
 var corsOptions = {
   origin: "http://localhost:8081"
 };
@@ -137,10 +139,9 @@ app.get('/apis', (req, res) => {
   });
 });
 
- 
   
 // set port, listen for requests
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8081;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
