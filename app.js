@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const hbs = require("hbs");
+const cookieParser = require('cookie-parser');
 const expressHbs = require("express-handlebars");
 // const jwt = require('jsonwebtoken');
 const paginate = require('express-paginate');
@@ -10,7 +11,21 @@ const fileUpload = require('express-fileupload');
 const passport = require('passport');
 
 const app = express();
-
+app.use(cookieParser());
+app.use((req,res,next)=>{
+  if(req.cookies.type){ 
+    // значит мы создаем instance 
+      if(req.cookies.type==='user'){
+          req.serviceWorker = {
+            msg:'now we have user'
+          };
+      }
+      if(req.cookies.type==='trener'){
+          req.serviceWorker = {};
+      } 
+  }
+  next();
+});
 app.use(paginate.middleware(10, 50));// пагинация страниц
 app.use(fileUpload({
     createParentPath: true
@@ -29,11 +44,13 @@ hbs.registerPartials(__dirname + "/views/partials");
 
 
 const db = require("./models");
+const userModel = require('./models/user.model');
 
 // связи в БД
 const Subject = db.subjects;
 const Comment = db.comments;
 const Trener = db.treners;
+const User = db.users;
 Subject.belongsToMany(Trener, { through: 'Trener_Subject' });
 Trener.belongsToMany(Subject, { through: 'Trener_Subject' });
 Trener.hasMany(Comment);
@@ -128,8 +145,9 @@ require("./routes/search.routes")(app);
 
 
 // simple route 
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome to bezkoder application." });
+app.get("/", async (req, res) => {
+  let allUsers =  await User.findAll();
+         res.json({ message: "Welcome to bezkoder application.", users: allUsers ,service:req.serviceWorker});
 });
 
 

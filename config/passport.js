@@ -9,10 +9,10 @@ const {Strategy : JwtStrategy, ExtractJwt} = require('passport-jwt');
  
 const opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-opts.secretOrKey = process.env.SECRET_OR_KEY;
-// opts.issuer = 'accounts.examplesoft.com';
+opts.secretOrKey = process.env.SECRET_OR_KEY||'kitty_mitty';
+ // opts.issuer = 'accounts.examplesoft.com';
 // opts.audience = 'yoursite.net';
-// create jwt strategy
+// create jwt strategy 
 module.exports = passport => {
   passport.use(
     new JwtStrategy(opts, (jwt_payload, done) => {
