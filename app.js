@@ -96,9 +96,9 @@ alltreners.forEach(async el=>{
 /**
  * connactions 
  */
-
+//TODO: сделать подключение в классе
 db.sequelize.sync().catch((e)=>{
-    console.log(e)
+    console.log(e);
 });
 
 app.use(passport.initialize());
@@ -125,7 +125,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 require("./routes/user.routes")(app);
 require("./routes/trener.routes")(app);
 require("./routes/search.routes")(app);
-
+require("./routes/main.routes")(app);
 
 // simple route 
 app.get("/", (req, res) => {

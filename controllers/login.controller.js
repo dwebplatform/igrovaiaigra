@@ -2,8 +2,6 @@ const db = require("../models");
 const User = db.users;
 const Op = db.Sequelize.Op;
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const { use } = require("node-mysql-admin/middleware/auth/authroutes");
  
 
 /** 

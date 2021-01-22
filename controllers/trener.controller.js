@@ -31,7 +31,7 @@ exports.editTrener = async(req,res)=>{
     let avatar = req.files.avatar;
     //:TODO доделать проверку загрузки img и дописать отправку всех полей
     let fileName = '/img/_uid_'+ trenerId + '_'+Math.floor(Math.random()*100000)+'.jpg';
-    avatar.mv('./public'+fileName);
+    avatar.mv('./public' + fileName);
     let updateTrener = await Trener.findOne({where:{
       id: trenerId
     }});
@@ -52,19 +52,15 @@ exports.editTrener = async(req,res)=>{
     try {
       await updateTrener.save();
       return res.json({
-        status:"ok",
-        msg:'Данные теперь новые'
+        status: "ok",
+        msg: 'Данные теперь новые'
       })
     } catch(e){
       return res.json({
         status:'error',
         msg:'не удалось обновить данные'
       })
-    }
-    return res.json({
-      status:'ok',
-      msg:'we do have file inside'
-    });
+    } 
   }
 }
 
@@ -138,7 +134,6 @@ exports.allTreners = async (req,res)=>{
     // return res.json({
     //     body: allTreners
     // });
-
    } catch(e){
 
        return res.json({

@@ -12,7 +12,7 @@ exports.findAll = async(req, res) => {
     let allUsers = await User.findAll();
     return res.json({
         status:'ok' ,
-        data:allUsers
+        data: allUsers
     }) 
 };
 

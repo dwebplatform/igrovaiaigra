@@ -49,12 +49,14 @@ module.exports = (app) => {
 		 	});
 		 }
   });
+
   router.get('/protected-info', passport.authenticate('jwt', {session: false}),(req,res)=>{
-    return res.json({
-      status:'ok',
-      msg:'this is protected route'
-    })
-  })
+        return res.json({
+          status: 'ok',
+          msg: 'this is protected route'
+        })
+  });
+
     // к этим потом вернусь
     // router.post('/login', users.checkUser);
     // router.post('/register', users.registerUser);

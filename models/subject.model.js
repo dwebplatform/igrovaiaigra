@@ -8,6 +8,9 @@ module.exports = (sequelize, Sequelize) => {
           name:{
               type: Sequelize.STRING,
           },
+          record:{
+            type: Sequelize.INTEGER
+          }
         });
     return Subject;
   };
