@@ -4,7 +4,41 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const db = require('../models');
 const User = db.users;
+const Trener = db.treners;
+//TODO: перененсти checkTrener и checkUser в отдельный файл
+async function checkTrener(email, password, res){
+  let trener = await Trener.findOne({
+    where: { email }
+  });
 
+  if (!trener) {
+    return res.json({
+      status: 'error',
+      msg: 'none auth'
+    });
+  }
+  let originalPassword = trener.password;
+  bcrypt.compare(password, originalPassword, function (err, result) {
+    if (err) {
+      return res.json({
+        status: 'error',
+        msg: 'not matched'
+      });
+    }
+    if (result) {
+      let payload = { id: trener.id };
+      jwt.sign(payload, 'kitty_mitty', {}, (err, token) => {
+        if (err) return res.json({ status: 'error' });
+          res.json({
+          success: 'ok',
+          token: 'Bearer ' + token,
+        });
+      });
+
+    }
+
+  })
+}
 async function checkUser( email, password, res) {
   let user = await User.findOne({
     where: { email }
@@ -55,6 +89,10 @@ module.exports = (app) => {
       if (type === 'user') {
          res.cookie('type','user');
          checkUser(email, password,res);
+      } else if(type === 'trener'){
+        //TODO: make function  
+        res.cookie('type','trener');
+        checkTrener(email, password, res);
       } else {
         return res.json({
           status: 'error',
