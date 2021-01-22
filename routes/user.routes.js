@@ -6,105 +6,13 @@ const db = require('../models');
 const User = db.users;
 const Trener = db.treners;
 //TODO: перененсти checkTrener и checkUser в отдельный файл
-async function checkTrener(email, password, res){
-  let trener = await Trener.findOne({
-    where: { email }
-  });
-
-  if (!trener) {
-    return res.json({
-      status: 'error',
-      msg: 'none auth'
-    });
-  }
-  let originalPassword = trener.password;
-  bcrypt.compare(password, originalPassword, function (err, result) {
-    if (err) {
-      return res.json({
-        status: 'error',
-        msg: 'not matched'
-      });
-    }
-    if (result) {
-      let payload = { id: trener.id };
-      jwt.sign(payload, 'kitty_mitty', {}, (err, token) => {
-        if (err) return res.json({ status: 'error' });
-          res.json({
-          success: 'ok',
-          token: 'Bearer ' + token,
-        });
-      });
-
-    }
-
-  })
-}
-async function checkUser( email, password, res) {
-  let user = await User.findOne({
-    where: { email }
-  });
-
-  if (!user) {
-    return res.json({
-      status: 'error',
-      msg: 'none auth'
-    });
-  }
-  let originalPassword = user.password;
-  bcrypt.compare(password, originalPassword, function (err, result) {
-    if (err) {
-      return res.json({
-        status: 'error',
-        msg: 'not matched'
-      })
-    }
-    if (result) {
-      let payload = { id: user.id };
-      jwt.sign(payload, 'kitty_mitty', {}, (err, token) => {
-        if (err) return res.json({ status: 'error' });
-          res.json({
-          success: 'ok',
-          token: 'Bearer ' + token,
-        });
-      });
-
-    }
-
-  })
-}
+ 
 module.exports = (app) => {
   const users = require('../controllers/login.controller');
   let router = require("express").Router();
   // Create a new Tutorial 
   // проверить jwt авторизацию с паспорт js
-  router.post('/login', async (req, res) => {
-    const { email, password, type } = req.body;
-    if (!email || !password) {
-      return res.json({
-        status: 'error',
-        msg: 'no email or password were provided'
-      });
-    }
-    try {
-      if (type === 'user') {
-         res.cookie('type','user');
-         checkUser(email, password,res);
-      } else if(type === 'trener'){
-        //TODO: make function  
-        res.cookie('type','trener');
-        checkTrener(email, password, res);
-      } else {
-        return res.json({
-          status: 'error',
-          msg: 'no type were provided'
-        })
-      }
-    } catch (err) {
-      return res.json({
-        status: 'error'
-      });
-    }
-  });
+  router.post('/login', users.multipleLogin );
   router.get('/protected-info', passport.authenticate('jwt', { session: false }), (req, res) => {
     return res.json({
       status: 'ok',
