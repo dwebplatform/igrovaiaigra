@@ -1,3 +1,5 @@
+
+const hashPassword = require('../utils/hashPassAsync');
 module.exports = (sequelize, Sequelize) => {
     const Trener = sequelize.define("treners", {
         id: {
@@ -32,5 +34,8 @@ module.exports = (sequelize, Sequelize) => {
             }
           }
         });
+        Trener.beforeCreate(async (trener)=>{
+          trener.password = await hashPassword(trener);
+       });
     return Trener;
   };

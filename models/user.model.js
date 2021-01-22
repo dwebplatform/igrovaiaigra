@@ -1,4 +1,17 @@
+const bcrypt = require('bcryptjs');
 
+async function hashPassword (user) {
+  const password = user.password
+  const saltRounds = 10;
+  const hashedPassword = await new Promise((resolve, reject) => {
+    bcrypt.hash(password, saltRounds, function(err, hash) {
+      if (err) reject(err)
+      resolve(hash)
+    });
+  })
+
+  return hashedPassword;
+}
 module.exports = (sequelize, Sequelize) => {
     const User = sequelize.define("users", {
         id: {
@@ -12,10 +25,12 @@ module.exports = (sequelize, Sequelize) => {
           email: {
               type: Sequelize.STRING
           },
-          role:{
-            type: Sequelize.STRING,
-            defaultValue:'user'
-          }
-        });
+         
+        }, 
+        );
+           
+     User.beforeCreate(async user=>{
+        user.password = await hashPassword(user);
+     });
     return User;
   };
