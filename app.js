@@ -16,19 +16,31 @@ const {UserService, TrenerService} = require('./utils/serviceUtil');
 
 
 const app = express();
+const mycors = require('cors');
+const corsOptions = {
+  origin: 'http://localhost:3000',
+  credentials : true
+ }
 app.use(cookieParser());
-app.use((req,res,next)=>{
-  if(req.cookies.type){ 
-    // значит мы создаем instance 
-      if(req.cookies.type==='user'){
-          req.serviceWorker = new UserService();
-      }
-      if(req.cookies.type==='trener'){
-          req.serviceWorker = new TrenerService();
-      } 
-  }
-  next();
-});
+app.use(mycors(corsOptions));
+// @ts-ignore
+// app.use((req,res,next)=>{
+//    if(req.cookies.type){ 
+//     // значит мы создаем instance 
+//       if(req.cookies.type === 'user'){
+//           // @ts-ignore 
+//           let {user_id} = req.cookies;
+//           req.serviceUtilContainer = new UserService(user_id);
+//       }
+//       if(req.cookies.type === 'trener'){
+//           // @ts-ignore
+//           let {trener_id} = req.cookies;
+          
+//           req.serviceUtilContainer = new TrenerService(trener_id);
+//       } 
+//   } 
+//   next();
+// });
 app.use(paginate.middleware(10, 50));// пагинация страниц
 app.use(fileUpload({
     createParentPath: true
@@ -47,6 +59,7 @@ hbs.registerPartials(__dirname + "/views/partials");
 
 
 const db = require("./models");
+// @ts-ignore
 const userModel = require('./models/user.model');
 
 // связи в БД
@@ -62,11 +75,10 @@ Trener.hasMany(Comment);
 Comment.belongsTo(Trener);
 
  (async()=>{
-
-  const subjects = ['Owerwatch','Dota 2','CS : GO','Super Mario'];
-
-  const alltreners =[{
+  const subjects = ['Owerwatch', 'Dota 2','CS : GO','Super Mario'];
+  const alltreners = [{
   name:'Jack',
+  
   password:'1234',
   avatar:'img/avatar1.jpg',
   price: 3700
@@ -125,11 +137,7 @@ app.use(passport.initialize());
 
 require('./config/passport')(passport);
 
-var corsOptions = {
-  origin: "http://localhost:8081"
-};
-
-app.use(cors(corsOptions));
+ 
 
 app.use(express.static('./public'));
 
@@ -148,12 +156,14 @@ require("./routes/search.routes")(app);
 require("./routes/main.routes")(app);
 
 // simple route 
-app.get("/", async (req, res) => {
+app.get("/",   async (req, res) => {
   // get all users
-  let items = await req.serviceWorker.getAll();
-  res.json({ message: " Welcome to bezkoder application.", users: items });
+  // @ts-ignore
+    
+   res.json({ message: "Welcome to bezkoder application.", });
 });
 
+// @ts-ignore
 app.get('/createDummyUserAndTrener', async (req,res)=>{
    
   let user = await User.create({
@@ -170,6 +180,7 @@ app.get('/createDummyUserAndTrener', async (req,res)=>{
     trener
   });
 })
+// @ts-ignore
 app.get('/apis', (req, res) => {
   res.json({
     message: 'Welcome to the API'

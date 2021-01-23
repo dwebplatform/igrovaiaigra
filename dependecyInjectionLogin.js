@@ -1,3 +1,4 @@
+// @ts-nocheck
 const cookieParser = require('cookie-parser');
 const express =require('express');
 const app = express();
@@ -112,8 +113,9 @@ function checkAuth(req,res,next){
 }
 app.get('/check-service',checkAuth,(req,res)=>{
     try{
-        let items = req.serviceWorker.getItems();
-        return res.json(items)
+
+        let items = req.serviceUtilContainer.getItems();
+        return res.json(items);
     } catch(e){
         return res.json({
             status:'error'

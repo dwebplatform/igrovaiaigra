@@ -3,17 +3,15 @@ const User = db.users;
 const Trener = db.treners;
 const Op = db.Sequelize.Op;
 const bcrypt = require('bcryptjs');
-<<<<<<< HEAD
- 
-=======
 const jwt = require('jsonwebtoken');
-
 
 async function checkTrener(email, password, res){
   let trener = await Trener.findOne({
     where: { email }
   });
   if (!trener) {
+    res.cookie('trener_id',trener.id);
+
     return res.json({
       status: 'error',
       msg: 'none auth'
@@ -33,8 +31,7 @@ async function checkTrener(email, password, res){
         if (err) return res.json({ status: 'error' });
           res.json({
           success: 'ok',
-          // TODO: возвращать токен в нормальном виде
-          token: 'Bearer ' + token,
+          token: token,
         });
       });
 
@@ -49,7 +46,7 @@ async function checkUser( email, password, res) {
 
   if (!user) {
     return res.json({
-      status: 'error',
+      status:'error',
       msg: 'none auth'
     });
   }
@@ -63,12 +60,14 @@ async function checkUser( email, password, res) {
     }
     if (result) {
       let payload = { id: user.id, type: 'user' };
+      //TODO: kitty_mitty поменять везде на process.env.SECRET_OR_KEY
       jwt.sign(payload, 'kitty_mitty', {}, (err, token) => {
+        
         if (err) return res.json({ status: 'error' });
-          res.json({
+        res.cookie('user_id',user.id);
+        res.json({
           success: 'ok',
-          // TODO возвращать токен в нормальном виде
-          token: 'Bearer ' + token,
+          token:  token,
         });
       });
 
@@ -79,7 +78,6 @@ async function checkUser( email, password, res) {
 
 
 
->>>>>>> 8534729cf0cffbeab7665629688fe40898917238
 
 /** 
  * @method {"GET"}  
